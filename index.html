@@ -1,12 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Simple idle clicker</title>
+	<title>Простой кликер</title>
 </head>
 <body>
-	
+	<button id="upgradeCopperMine" onclick="upgradeCopperMine()">Улучшить медную шахту, 10 медных монет</button>
+	Медные монеты: <span id="copperCoins">0</span>
+  <script>
+    let copperCoins = 0;
+    let copperCoinsGrowth = 1;
+
+    gameTimer = setInterval(endOfTurnCalc, 2000);
+
+    function endOfTurnCalc() {
+      copperCoins = copperCoins + copperCoinsGrowth;
+      document.getElementById("copperCoins").innerHTML = copperCoins;
+    }
+  </script>
 </body>
 </html>
