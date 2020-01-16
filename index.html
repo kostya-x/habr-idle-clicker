@@ -14,6 +14,8 @@
   <div>
     Скорость заработка медных монет: <span id="copperCoinsRate">1</span> в 2 секунды
   </div>
+  <button id="saveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
+  <button id="loadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
   <script>
     let copperCoins = 0;
     let copperCoinsGrowth = 1;
@@ -45,6 +47,23 @@
         document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
         document.getElementById("copperCoinsRate").innerHTML = copperCoinsGrowth * copperMineLevel;
       }
+    }
+
+    function saveGame() {
+      localStorage.setItem('copperCoins', copperCoins);
+      localStorage.setItem('copperMineUpgradeCost', copperMineUpgradeCost);
+      localStorage.setItem('copperMineLevel', copperMineLevel);
+    }
+
+    function loadGame() {
+      copperCoins = parseInt(localStorage.getItem('copperCoins'));
+      copperMineUpgradeCost = parseInt(localStorage.getItem('copperMineUpgradeCost'));
+      copperMineLevel = parseInt(localStorage.getItem('copperMineLevel'));
+      document.getElementById("copperCoins").innerHTML = copperCoins;
+      document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
+      document.getElementById("upgradeCopperMine").innerHTML += copperMineUpgradeCost.toString();
+      document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
+      document.getElementById("copperCoinsRate").innerHTML = copperCoinsGrowth * copperMineLevel;
     }
   </script>
 </body>
