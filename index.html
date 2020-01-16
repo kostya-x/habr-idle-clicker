@@ -19,12 +19,18 @@
     let copperCoinsGrowth = 1;
     let copperMineUpgradeCost = 10;
     let copperMineLevel = 1;
+    let winCondition = 50;
 
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
     function endOfTurnCalc() {
-      copperCoins = copperCoins + copperCoinsGrowth * copperMineLevel;
-      document.getElementById("copperCoins").innerHTML = copperCoins;
+      if (copperCoins < winCondition) {
+        copperCoins = copperCoins + copperCoinsGrowth * copperMineLevel;
+        document.getElementById("copperCoins").innerHTML = copperCoins;
+      } else {
+        clearTimeout(gameTimer);
+        alert("Вы достигли цели! Вы накопили " + winCondition.toString());
+      }
     }
 
     function upgradeCopperMine() {
