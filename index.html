@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Простой кликер</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Простой кликер</title>
 </head>
 <body>
-	<button id="upgradeCopperMine" onclick="upgradeCopperMine()">Улучшить медную шахту, 10 медных монет</button>
-	Медные монеты: <span id="copperCoins">0</span>
+  <button id="upgradeCopperMine" onclick="upgradeCopperMine()" style="width: 240px;">Улучшить медную шахту, 10 медных монет</button>
+  <div>
+    Медные монеты: <span id="copperCoins">0</span>
+  </div>
+  <div>
+    Скорость заработка медных монет: <span id="copperCoinsRate">1</span> в 2 секунды
+  </div>
   <script>
     let copperCoins = 0;
     let copperCoinsGrowth = 1;
+    let copperMineUpgradeCost = 10;
+    let copperMineLevel = 1;
 
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
     function endOfTurnCalc() {
-      copperCoins = copperCoins + copperCoinsGrowth;
+      copperCoins = copperCoins + copperCoinsGrowth * copperMineLevel;
       document.getElementById("copperCoins").innerHTML = copperCoins;
+    }
+
+    function upgradeCopperMine() {
+      if (copperCoins >= copperMineUpgradeCost) {
+        copperCoins -= copperMineUpgradeCost;
+        copperMineLevel++;
+        copperMineUpgradeCost *= 2;
+
+        document.getElementById("copperCoins").innerHTML = copperCoins;
+        document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
+        document.getElementById("upgradeCopperMine").innerHTML += copperMineUpgradeCost.toString();
+        document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
+        document.getElementById("copperCoinsRate").innerHTML = copperCoinsGrowth * copperMineLevel;
+      }
     }
   </script>
 </body>
