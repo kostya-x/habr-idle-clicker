@@ -17,18 +17,21 @@
   <button id="saveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
   <button id="loadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
   <script>
-    let copperCoins = 0;
-    let copperCoinsGrowth = 1;
-    let copperMineUpgradeCost = 10;
-    let copperMineLevel = 1;
+    let game = {
+      copperCoins = 0,
+      copperCoinsGrowth = 1,
+      copperMineUpgradeCost = 10,
+      copperMineLevel = 1
+    }
+
     let winCondition = 50;
 
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
     function endOfTurnCalc() {
-      if (copperCoins < winCondition) {
-        copperCoins = copperCoins + copperCoinsGrowth * copperMineLevel;
-        document.getElementById("copperCoins").innerHTML = copperCoins;
+      if (game.copperCoins < winCondition) {
+        game.copperCoins = game.copperCoins + game.copperCoinsGrowth * game.copperMineLevel;
+        document.getElementById("copperCoins").innerHTML = game.copperCoins;
       } else {
         clearTimeout(gameTimer);
         alert("Вы достигли цели! Вы накопили " + winCondition.toString());
@@ -36,34 +39,34 @@
     }
 
     function upgradeCopperMine() {
-      if (copperCoins >= copperMineUpgradeCost) {
-        copperCoins -= copperMineUpgradeCost;
-        copperMineLevel++;
-        copperMineUpgradeCost *= 2;
+      if (game.copperCoins >= game.copperMineUpgradeCost) {
+        game.copperCoins -= game.copperMineUpgradeCost;
+        game.copperMineLevel++;
+        game.copperMineUpgradeCost *= 2;
 
-        document.getElementById("copperCoins").innerHTML = copperCoins;
+        document.getElementById("copperCoins").innerHTML = game.copperCoins;
         document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
-        document.getElementById("upgradeCopperMine").innerHTML += copperMineUpgradeCost.toString();
+        document.getElementById("upgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
         document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
-        document.getElementById("copperCoinsRate").innerHTML = copperCoinsGrowth * copperMineLevel;
+        document.getElementById("copperCoinsRate").innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
       }
     }
 
     function saveGame() {
-      localStorage.setItem('copperCoins', copperCoins);
-      localStorage.setItem('copperMineUpgradeCost', copperMineUpgradeCost);
-      localStorage.setItem('copperMineLevel', copperMineLevel);
+      localStorage.setItem('copperCoins', game.copperCoins);
+      localStorage.setItem('copperMineUpgradeCost', game.copperMineUpgradeCost);
+      localStorage.setItem('copperMineLevel', game.copperMineLevel);
     }
 
     function loadGame() {
-      copperCoins = parseInt(localStorage.getItem('copperCoins'));
-      copperMineUpgradeCost = parseInt(localStorage.getItem('copperMineUpgradeCost'));
-      copperMineLevel = parseInt(localStorage.getItem('copperMineLevel'));
-      document.getElementById("copperCoins").innerHTML = copperCoins;
+      game.copperCoins = parseInt(localStorage.getItem('copperCoins'));
+      game.copperMineUpgradeCost = parseInt(localStorage.getItem('copperMineUpgradeCost'));
+      game.copperMineLevel = parseInt(localStorage.getItem('copperMineLevel'));
+      document.getElementById("copperCoins").innerHTML = game.copperCoins;
       document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
-      document.getElementById("upgradeCopperMine").innerHTML += copperMineUpgradeCost.toString();
+      document.getElementById("upgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
       document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
-      document.getElementById("copperCoinsRate").innerHTML = copperCoinsGrowth * copperMineLevel;
+      document.getElementById("copperCoinsRate").innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
     }
   </script>
 </body>
