@@ -31,7 +31,8 @@
     function endOfTurnCalc() {
       if (game.copperCoins < winCondition) {
         game.copperCoins = game.copperCoins + game.copperCoinsGrowth * game.copperMineLevel;
-        document.getElementById("copperCoins").innerHTML = game.copperCoins;
+        
+        updateUI();
       } else {
         clearTimeout(gameTimer);
         alert("Вы достигли цели! Вы накопили " + winCondition.toString());
@@ -39,21 +40,26 @@
     }
 
     function calcCopperMineUpgradeCost() {
-      return game.copperMineUpgradeCost * 1.15;
+      return game.copperMineUpgradeCost *= 1.15;
     }
 
     function upgradeCopperMine() {
       if (game.copperCoins >= game.copperMineUpgradeCost) {
         game.copperCoins -= game.copperMineUpgradeCost;
         game.copperMineLevel++;
+
         calcCopperMineUpgradeCost();
 
-        document.getElementById("copperCoins").innerHTML = game.copperCoins;
+        updateUI();
+      }
+    }
+
+    function updateUI() {
+      document.getElementById("copperCoins").innerHTML = game.copperCoins;
         document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
         document.getElementById("upgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
         document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
         document.getElementById("copperCoinsRate").innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
-      }
     }
 
     function saveGame() {
@@ -62,11 +68,8 @@
 
     function loadGame() {
       game = JSON.parse(localStorage.getItem('gameSave'));
-      document.getElementById("copperCoins").innerHTML = game.copperCoins;
-      document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
-      document.getElementById("upgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
-      document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
-      document.getElementById("copperCoinsRate").innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
+      
+      updateUI();
     }
   </script>
 </body>
