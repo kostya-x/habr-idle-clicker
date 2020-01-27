@@ -18,10 +18,10 @@
   <button id="loadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
   <script>
     let game = {
-      copperCoins = 0,
-      copperCoinsGrowth = 1,
-      copperMineUpgradeCost = 10,
-      copperMineLevel = 1
+      copperCoins: 0,
+      copperCoinsGrowth: 1,
+      copperMineUpgradeCost: 10,
+      copperMineLevel: 1
     }
 
     let winCondition = 50;
@@ -38,11 +38,14 @@
       }
     }
 
+    function calcCopperMineUpgradeCost() {
+      return copperMineUpgradeCost * 10;
+    }
+
     function upgradeCopperMine() {
-      if (game.copperCoins >= game.copperMineUpgradeCost) {
-        game.copperCoins -= game.copperMineUpgradeCost;
+      if (game.copperCoins >= calcCopperMineUpgradeCost()) {
+        game.copperCoins -= calcCopperMineUpgradeCost();
         game.copperMineLevel++;
-        game.copperMineUpgradeCost *= 2;
 
         document.getElementById("copperCoins").innerHTML = game.copperCoins;
         document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
