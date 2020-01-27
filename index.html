@@ -39,13 +39,14 @@
     }
 
     function calcCopperMineUpgradeCost() {
-      return copperMineUpgradeCost * 10;
+      return game.copperMineUpgradeCost * 1.15;
     }
 
     function upgradeCopperMine() {
-      if (game.copperCoins >= calcCopperMineUpgradeCost()) {
-        game.copperCoins -= calcCopperMineUpgradeCost();
+      if (game.copperCoins >= game.copperMineUpgradeCost) {
+        game.copperCoins -= game.copperMineUpgradeCost;
         game.copperMineLevel++;
+        calcCopperMineUpgradeCost();
 
         document.getElementById("copperCoins").innerHTML = game.copperCoins;
         document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
