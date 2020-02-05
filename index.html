@@ -17,6 +17,10 @@
   <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
   <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
   <script>
+    const UPGRADE_COPPER_MINE = document.getElementById("btnUpgradeCopperMine");
+    const COPPER_COINS_AMOUNT = document.getElementById("copperCoinsAmount");
+    const COPPER_COINS_RATE = document.getElementById("copperCoinsRate");
+
     let game = {
       copperCoins: 0,
       copperCoinsGrowth: 1,
@@ -55,11 +59,9 @@
     }
 
     function updateUI() {
-      document.getElementById("copperCoinsAmount").innerHTML = game.copperCoins;
-        document.getElementById("btnUpgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
-        document.getElementById("btnUpgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
-        document.getElementById("btnUpgradeCopperMine").innerHTML += " медных монет";
-        document.getElementById("copperCoinsRate").innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
+      UPGRADE_COPPER_MINE.textContent = `Улучшить медную шахту, ${game.copperMineUpgradeCost.toString()} медных монет.`;
+      COPPER_COINS_AMOUNT.innerHTML = game.copperCoins;
+      COPPER_COINS_RATE.innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
     }
 
     function saveGame() {
