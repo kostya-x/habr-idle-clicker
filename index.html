@@ -7,15 +7,15 @@
   <title>Простой кликер</title>
 </head>
 <body>
-  <button id="upgradeCopperMine" onclick="upgradeCopperMine()" style="width: 240px;">Улучшить медную шахту, 10 медных монет</button>
+  <button id="btnUpgradeCopperMine" onclick="upgradeCopperMine()" style="width: 240px;">Улучшить медную шахту, 10 медных монет</button>
   <div>
-    Медные монеты: <span id="copperCoins">0</span>
+    Медные монеты: <span id="copperCoinsAmount">0</span>
   </div>
   <div>
     Скорость заработка медных монет: <span id="copperCoinsRate">1</span> в 2 секунды
   </div>
-  <button id="saveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
-  <button id="loadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
+  <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
+  <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
   <script>
     let game = {
       copperCoins: 0,
@@ -55,10 +55,10 @@
     }
 
     function updateUI() {
-      document.getElementById("copperCoins").innerHTML = game.copperCoins;
-        document.getElementById("upgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
-        document.getElementById("upgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
-        document.getElementById("upgradeCopperMine").innerHTML += " медных монет";
+      document.getElementById("copperCoinsAmount").innerHTML = game.copperCoins;
+        document.getElementById("btnUpgradeCopperMine").innerHTML = "Улучшить медную шахту, ";
+        document.getElementById("btnUpgradeCopperMine").innerHTML += game.copperMineUpgradeCost.toString();
+        document.getElementById("btnUpgradeCopperMine").innerHTML += " медных монет";
         document.getElementById("copperCoinsRate").innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
     }
 
