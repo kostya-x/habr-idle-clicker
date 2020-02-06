@@ -22,10 +22,12 @@
     const COPPER_COINS_RATE = document.getElementById("copperCoinsRate");
 
     let game = {
-      copperCoins: 0,
-      copperCoinsGrowth: 1,
-      copperMineUpgradeCost: 10,
-      copperMineLevel: 1
+      copper : {
+        coins: 0,
+        coinsGrowth: 1,
+        mineUpgradeCost: 10,
+        mineLevel: 1
+      }
     }
 
     let winCondition = 1000000;
@@ -33,8 +35,8 @@
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
     function endOfTurnCalc() {
-      if (game.copperCoins < winCondition) {
-        game.copperCoins = game.copperCoins + game.copperCoinsGrowth * game.copperMineLevel;
+      if (game.copper.coins < winCondition) {
+        game.copper.coins += game.copper.coinsGrowth * game.copper.mineLevel;
         
         updateUI();
       } else {
@@ -44,13 +46,13 @@
     }
 
     function calcCopperMineUpgradeCost() {
-      return game.copperMineUpgradeCost *= 1.15;
+      return game.copper.mineUpgradeCost *= 1.15;
     }
 
     function upgradeCopperMine() {
-      if (game.copperCoins >= game.copperMineUpgradeCost) {
-        game.copperCoins -= game.copperMineUpgradeCost;
-        game.copperMineLevel++;
+      if (game.copper.coins >= game.copper.mineUpgradeCost) {
+        game.copper.coins -= game.copper.mineUpgradeCost;
+        game.copper.mineLevel++;
 
         calcCopperMineUpgradeCost();
 
@@ -59,9 +61,9 @@
     }
 
     function updateUI() {
-      UPGRADE_COPPER_MINE.textContent = `Улучшить медную шахту, ${game.copperMineUpgradeCost.toString()} медных монет.`;
-      COPPER_COINS_AMOUNT.innerHTML = game.copperCoins;
-      COPPER_COINS_RATE.innerHTML = game.copperCoinsGrowth * game.copperMineLevel;
+      UPGRADE_COPPER_MINE.textContent = `Улучшить медную шахту, ${game.copper.mineUpgradeCost.toString()} медных монет.`;
+      COPPER_COINS_AMOUNT.innerHTML = game.copper.coins;
+      COPPER_COINS_RATE.innerHTML = game.copper.coinsGrowth * game.copper.mineLevel;
     }
 
     function saveGame() {
