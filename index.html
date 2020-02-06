@@ -46,7 +46,7 @@
     }
 
     function calcCopperMineUpgradeCost() {
-      return game.copper.mineUpgradeCost *= 1.15;
+      return game.copper.mineUpgradeCost = Math.ceil(game.copper.mineUpgradeCost * 1.15);
     }
 
     function upgradeCopperMine() {
