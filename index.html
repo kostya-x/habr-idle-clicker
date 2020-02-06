@@ -14,19 +14,39 @@
   <div>
     Скорость заработка медных монет: <span id="copperCoinsRate">1</span> в 2 секунды
   </div>
+
+  <button id="btnUpgradeSilverMine" onclick="upgradeSilverMine()" style="width: 240px;">Улучшить серебрянную шахту, 100 медных монет</button>
+  <div>
+    Серебрянные монеты: <span id="silverCoinsAmount">0</span>
+  </div>
+  <div>
+    Скорость заработка медных монет: <span id="silverCoinsRate">0</span> в 2 секунды
+  </div>
+
   <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
   <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
+
   <script>
     const UPGRADE_COPPER_MINE = document.getElementById("btnUpgradeCopperMine");
     const COPPER_COINS_AMOUNT = document.getElementById("copperCoinsAmount");
     const COPPER_COINS_RATE = document.getElementById("copperCoinsRate");
 
+    const UPGRADE_SILVER_MINE = document.getElementById("btnUpgradeSilverMine");
+    const SILVER_COINS_AMOUNT = document.getElementById("silverCoinsAmount");
+    const SILVER_COINS_RATE = document.getElementById("silverCoinsRate");
+
     let game = {
       copper : {
-        coins: 0,
+        coins: 100,
         coinsGrowth: 1,
         mineUpgradeCost: 10,
         mineLevel: 1
+      },
+      silver : {
+        coins: 0,
+        coinsGrowth: 1,
+        mineUpgradeCost: 100,
+        mineLevel: 0
       }
     }
 
@@ -35,8 +55,9 @@
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
     function endOfTurnCalc() {
-      if (game.copper.coins < winCondition) {
+      if (game.silver.coins < winCondition) {
         game.copper.coins += game.copper.coinsGrowth * game.copper.mineLevel;
+        game.silver.coins += game.silver.coinsGrowth * game.silver.mineLevel;
         
         updateUI();
       } else {
@@ -49,14 +70,38 @@
       return game.copper.mineUpgradeCost = Math.ceil(game.copper.mineUpgradeCost * 1.15);
     }
 
+    function calcSilverMineUpgradeCost() {
+      return game.silver.mineUpgradeCost = Math.ceil(game.silver.mineUpgradeCost * 1.2);
+    }
+
     function upgradeCopperMine() {
       if (game.copper.coins >= game.copper.mineUpgradeCost) {
         game.copper.coins -= game.copper.mineUpgradeCost;
+        calcCopperMineUpgradeCost();
         game.copper.mineLevel++;
 
-        calcCopperMineUpgradeCost();
-
         updateUI();
+      }
+    }
+
+    function upgradeSilverMine() {
+      if (game.silver.mineLevel === 0) {
+        if (game.copper.coins >= game.silver.mineUpgradeCost) {
+          game.silver.mineLevel = 1;
+          game.copper.coins -= game.silver.mineUpgradeCost;
+          calcSilverMineUpgradeCost();
+          game.silver.mineUpgradeCost = 20;
+
+          updateUI();
+        }
+      } else {
+        if (game.silver.coins >= game.silver.mineUpgradeCost) {
+          game.silver.coins -= game.silver.mineUpgradeCost;
+          calcSilverMineUpgradeCost();
+          game.silver.mineLevel++;
+
+          updateUI();
+        }
       }
     }
 
@@ -64,6 +109,14 @@
       UPGRADE_COPPER_MINE.textContent = `Улучшить медную шахту, ${game.copper.mineUpgradeCost.toString()} медных монет.`;
       COPPER_COINS_AMOUNT.innerHTML = game.copper.coins;
       COPPER_COINS_RATE.innerHTML = game.copper.coinsGrowth * game.copper.mineLevel;
+
+      SILVER_COINS_AMOUNT.innerHTML = game.silver.coins;
+      SILVER_COINS_RATE.innerHTML = game.silver.coinsGrowth * game.silver.mineLevel;
+      if (game.silver.mineLevel === 1) {
+        UPGRADE_SILVER_MINE.textContent = `Построить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} медных монет.`;
+      } else {
+        UPGRADE_SILVER_MINE.textContent = `Улучшить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} серебрянных монет.`;
+      }
     }
 
     function saveGame() {
