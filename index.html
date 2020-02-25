@@ -23,6 +23,11 @@
     Скорость заработка медных монет: <span id="silverCoinsRate">0</span> в 2 секунды
   </div>
 
+  <div class="market">
+    <button id="btnBuySilver" onclick="buySilver()" style="width: 240px;">Купить 1 серебро за 110 медных</button>
+    <button id="btnBuyCopper" onclick="buyCopper()" style="width: 240px;">Купить 90 медных за 1 серебро </button>
+  </div>
+
   <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
   <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
 
@@ -37,7 +42,7 @@
 
     let game = {
       copper : {
-        coins: 100,
+        coins: 1000,
         coinsGrowth: 1,
         mineUpgradeCost: 10,
         mineLevel: 1
@@ -105,6 +110,22 @@
       }
     }
 
+    function buyCopper() {
+      if(game.silver.coins >= 1) {
+        game.silver.coins -= 1;
+        game.copper.coins += 90;
+        updateUI();
+      }
+    }
+
+    function buySilver() {
+      if(game.copper.coins >= 110) {
+        game.copper.coins -= 110;
+        game.silver.coins += 1;
+        updateUI();
+      }
+    }
+
     function updateUI() {
       UPGRADE_COPPER_MINE.textContent = `Улучшить медную шахту, ${game.copper.mineUpgradeCost.toString()} медных монет.`;
       COPPER_COINS_AMOUNT.innerHTML = game.copper.coins;
@@ -112,7 +133,7 @@
 
       SILVER_COINS_AMOUNT.innerHTML = game.silver.coins;
       SILVER_COINS_RATE.innerHTML = game.silver.coinsGrowth * game.silver.mineLevel;
-      if (game.silver.mineLevel === 1) {
+      if (game.silver.mineLevel === 0) {
         UPGRADE_SILVER_MINE.textContent = `Построить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} медных монет.`;
       } else {
         UPGRADE_SILVER_MINE.textContent = `Улучшить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} серебрянных монет.`;
