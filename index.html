@@ -7,6 +7,7 @@
   <title>Простой кликер</title>
 </head>
 <body>
+  <div id="prestigeLevel" style="display: none"></div>
   <button id="btnUpgradeCopperMine" onclick="upgradeCopperMine()" style="width: 240px;">Улучшить медную шахту, 10 медных монет</button>
   <div>
     Медные монеты: <span id="copperCoinsAmount">0</span>
@@ -15,7 +16,7 @@
     Скорость заработка медных монет: <span id="copperCoinsRate">1</span> в 2 секунды
   </div>
 
-  <button id="btnUpgradeSilverMine" onclick="upgradeSilverMine()" style="width: 240px;">Улучшить серебрянную шахту, 100 медных монет</button>
+  <button id="btnUpgradeSilverMine" onclick="upgradeSilverMine()" style="width: 240px;">Построить серебрянную шахту, 100 медных монет</button>
   <div>
     Серебрянные монеты: <span id="silverCoinsAmount">0</span>
   </div>
@@ -42,7 +43,7 @@
 
     let game = {
       copper : {
-        coins: 1000,
+        coins: 0,
         coinsGrowth: 1,
         mineUpgradeCost: 10,
         mineLevel: 1
@@ -66,9 +67,34 @@
         
         updateUI();
       } else {
-        clearTimeout(gameTimer);
-        alert("Вы достигли цели! Вы накопили " + winCondition.toString());
+        widGame();
       }
+    }
+
+    function widGame() {
+      clearTimeout(gameTimer);
+      alert("Вы достигли цели! Вы накопили " + winCondition.toString());
+      myRestartTimer = setTimeout(restartGameDialog, 2000);
+    }
+
+    function restartGameDialog() {
+      if (confirm('Хотите сыграть еще раз с очками Престижа?')) {
+        restartGame();
+      } else {
+        clearTimeout(myRestartTimer);
+      }
+    }
+
+    function restartGame() {
+      game.copper.coins = 0;
+      game.copper.coinsGrowth = game.copper.coinsGrowth + 1;
+      game.copper.mineUpgradeCost = 1;
+      game.silver.coins = 0;
+      game.silver.coinsGrowth = game.silver.coinsGrowth + 1;
+      game.silver.mineUpgradeCost = 0;
+      clearTimeout(myRestartTimer);
+      myTimer = setInterval(endOfTurnCalc, 2000);
+      updateUI();
     }
 
     function calcCopperMineUpgradeCost() {
@@ -133,10 +159,18 @@
 
       SILVER_COINS_AMOUNT.innerHTML = game.silver.coins;
       SILVER_COINS_RATE.innerHTML = game.silver.coinsGrowth * game.silver.mineLevel;
+
       if (game.silver.mineLevel === 0) {
         UPGRADE_SILVER_MINE.textContent = `Построить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} медных монет.`;
       } else {
         UPGRADE_SILVER_MINE.textContent = `Улучшить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} серебрянных монет.`;
+      }
+
+      if (game.copper.coinsGrowth > 1) {
+        document.getElementById("prestigeLevel").innerHTML = "Мультипликатор от эффекта Престижа равен " + game.copper.coinsGrowth.toString();
+        document.getElementById("prestigeLevel").style.display = "block";
+      } else {
+        document.getElementById("prestigeLevel").style.display = "none";
       }
     }
 
