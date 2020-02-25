@@ -179,8 +179,8 @@
     }
 
     function loadGame() {
-      game = JSON.parse(localStorage.getItem('gameSave'));
-      
+      gameCoockie = JSON.parse(localStorage.getItem('gameSave'));
+      for (var propertyName in gameCoockie) { game[propertyName] = gameCoockie[propertyName]; }
       updateUI();
     }
   </script>
