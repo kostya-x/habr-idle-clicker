@@ -29,8 +29,16 @@
     <button id="btnBuyCopper" onclick="buyCopper()" style="width: 240px;">Купить 90 медных за 1 серебро </button>
   </div>
 
-  <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
-  <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
+  <div class="save-load">
+    <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
+    <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
+  </div>
+
+  <div class="import-export">
+    <button id="btnExportGame" onclick="exportGame()" style="width: 240px;">Экспортировать игру</button>
+    <button id="btnImportGame" onclick="importGame()" style="width: 240px;">Импортировать игру</button>
+    <div id="exportLevel" style="display: none"></div>
+  </div>
 
   <script>
     const UPGRADE_COPPER_MINE = document.getElementById("btnUpgradeCopperMine");
@@ -57,6 +65,8 @@
     }
 
     let winCondition = 1000000;
+    let countdown = 30;
+    let showExport = 0;
 
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
@@ -172,6 +182,12 @@
       } else {
         document.getElementById("prestigeLevel").style.display = "none";
       }
+
+      if (showExport === 1){
+        document.getElementById("exportLevel").style.display = "block";
+      } else {
+        document.getElementById("exportLevel").style.display = "none";
+      }
     }
 
     function saveGame() {
@@ -182,6 +198,31 @@
       gameCoockie = JSON.parse(localStorage.getItem('gameSave'));
       for (var propertyName in gameCoockie) { game[propertyName] = gameCoockie[propertyName]; }
       updateUI();
+    }
+
+    function exportGame() {
+      exportTimer = setInterval(exportCountdown, 1000);
+      document.getElementById("exportLevel").innerHTML = btoa(JSON.stringify(game));
+      showExport = 1;
+      updateUI();
+    }
+
+    function importGame() {
+      let importString = prompt('Введите длинную строку экспорта');
+      gameTemp = JSON.parse(atob(importString));
+      for (var propertyName in gameTemp) { game[propertyName] = gameTemp[propertyName]; }
+      updateUI();
+    }
+
+    function exportCountdown() {
+      if (countdown > 0) {
+        countdown -= 1;
+      } else {
+        clearTimeout(exportTimer);
+        countdown = 30;
+        showExport = 0;
+        updateUI();
+      }
     }
   </script>
 </body>
