@@ -7,6 +7,7 @@
   <title>Простой кликер</title>
 </head>
 <body>
+  <div id="prestigeLevel" style="display: none"></div>
   <button id="btnUpgradeCopperMine" onclick="upgradeCopperMine()" style="width: 240px;">Улучшить медную шахту, 10 медных монет</button>
   <div>
     Медные монеты: <span id="copperCoinsAmount">0</span>
@@ -14,12 +15,39 @@
   <div>
     Скорость заработка медных монет: <span id="copperCoinsRate">1</span> в 2 секунды
   </div>
-  <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
-  <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
+
+  <button id="btnUpgradeSilverMine" onclick="upgradeSilverMine()" style="width: 240px;">Построить серебрянную шахту, 100 медных монет</button>
+  <div>
+    Серебрянные монеты: <span id="silverCoinsAmount">0</span>
+  </div>
+  <div>
+    Скорость заработка медных монет: <span id="silverCoinsRate">0</span> в 2 секунды
+  </div>
+
+  <div class="market">
+    <button id="btnBuySilver" onclick="buySilver()" style="width: 240px;">Купить 1 серебро за 110 медных</button>
+    <button id="btnBuyCopper" onclick="buyCopper()" style="width: 240px;">Купить 90 медных за 1 серебро </button>
+  </div>
+
+  <div class="save-load">
+    <button id="btnSaveGame" onclick="saveGame()" style="width: 240px;">Сохранить игру</button>
+    <button id="btnLoadGame" onclick="loadGame()" style="width: 240px;">Загрузить игру</button>
+  </div>
+
+  <div class="import-export">
+    <button id="btnExportGame" onclick="exportGame()" style="width: 240px;">Экспортировать игру</button>
+    <button id="btnImportGame" onclick="importGame()" style="width: 240px;">Импортировать игру</button>
+    <div id="exportLevel" style="display: none"></div>
+  </div>
+
   <script>
     const UPGRADE_COPPER_MINE = document.getElementById("btnUpgradeCopperMine");
     const COPPER_COINS_AMOUNT = document.getElementById("copperCoinsAmount");
     const COPPER_COINS_RATE = document.getElementById("copperCoinsRate");
+
+    const UPGRADE_SILVER_MINE = document.getElementById("btnUpgradeSilverMine");
+    const SILVER_COINS_AMOUNT = document.getElementById("silverCoinsAmount");
+    const SILVER_COINS_RATE = document.getElementById("silverCoinsRate");
 
     let game = {
       copper : {
@@ -27,35 +55,109 @@
         coinsGrowth: 1,
         mineUpgradeCost: 10,
         mineLevel: 1
+      },
+      silver : {
+        coins: 0,
+        coinsGrowth: 1,
+        mineUpgradeCost: 100,
+        mineLevel: 0
       }
     }
 
     let winCondition = 1000000;
+    let countdown = 30;
+    let showExport = 0;
 
     gameTimer = setInterval(endOfTurnCalc, 2000);
 
     function endOfTurnCalc() {
-      if (game.copper.coins < winCondition) {
+      if (game.silver.coins < winCondition) {
         game.copper.coins += game.copper.coinsGrowth * game.copper.mineLevel;
+        game.silver.coins += game.silver.coinsGrowth * game.silver.mineLevel;
         
         updateUI();
       } else {
-        clearTimeout(gameTimer);
-        alert("Вы достигли цели! Вы накопили " + winCondition.toString());
+        widGame();
       }
+    }
+
+    function widGame() {
+      clearTimeout(gameTimer);
+      alert("Вы достигли цели! Вы накопили " + winCondition.toString());
+      myRestartTimer = setTimeout(restartGameDialog, 2000);
+    }
+
+    function restartGameDialog() {
+      if (confirm('Хотите сыграть еще раз с очками Престижа?')) {
+        restartGame();
+      } else {
+        clearTimeout(myRestartTimer);
+      }
+    }
+
+    function restartGame() {
+      game.copper.coins = 0;
+      game.copper.coinsGrowth = game.copper.coinsGrowth + 1;
+      game.copper.mineUpgradeCost = 1;
+      game.silver.coins = 0;
+      game.silver.coinsGrowth = game.silver.coinsGrowth + 1;
+      game.silver.mineUpgradeCost = 0;
+      clearTimeout(myRestartTimer);
+      myTimer = setInterval(endOfTurnCalc, 2000);
+      updateUI();
     }
 
     function calcCopperMineUpgradeCost() {
       return game.copper.mineUpgradeCost = Math.ceil(game.copper.mineUpgradeCost * 1.15);
     }
 
+    function calcSilverMineUpgradeCost() {
+      return game.silver.mineUpgradeCost = Math.ceil(game.silver.mineUpgradeCost * 1.2);
+    }
+
     function upgradeCopperMine() {
       if (game.copper.coins >= game.copper.mineUpgradeCost) {
         game.copper.coins -= game.copper.mineUpgradeCost;
+        calcCopperMineUpgradeCost();
         game.copper.mineLevel++;
 
-        calcCopperMineUpgradeCost();
+        updateUI();
+      }
+    }
 
+    function upgradeSilverMine() {
+      if (game.silver.mineLevel === 0) {
+        if (game.copper.coins >= game.silver.mineUpgradeCost) {
+          game.silver.mineLevel = 1;
+          game.copper.coins -= game.silver.mineUpgradeCost;
+          calcSilverMineUpgradeCost();
+          game.silver.mineUpgradeCost = 20;
+
+          updateUI();
+        }
+      } else {
+        if (game.silver.coins >= game.silver.mineUpgradeCost) {
+          game.silver.coins -= game.silver.mineUpgradeCost;
+          calcSilverMineUpgradeCost();
+          game.silver.mineLevel++;
+
+          updateUI();
+        }
+      }
+    }
+
+    function buyCopper() {
+      if(game.silver.coins >= 1) {
+        game.silver.coins -= 1;
+        game.copper.coins += 90;
+        updateUI();
+      }
+    }
+
+    function buySilver() {
+      if(game.copper.coins >= 110) {
+        game.copper.coins -= 110;
+        game.silver.coins += 1;
         updateUI();
       }
     }
@@ -64,6 +166,28 @@
       UPGRADE_COPPER_MINE.textContent = `Улучшить медную шахту, ${game.copper.mineUpgradeCost.toString()} медных монет.`;
       COPPER_COINS_AMOUNT.innerHTML = game.copper.coins;
       COPPER_COINS_RATE.innerHTML = game.copper.coinsGrowth * game.copper.mineLevel;
+
+      SILVER_COINS_AMOUNT.innerHTML = game.silver.coins;
+      SILVER_COINS_RATE.innerHTML = game.silver.coinsGrowth * game.silver.mineLevel;
+
+      if (game.silver.mineLevel === 0) {
+        UPGRADE_SILVER_MINE.textContent = `Построить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} медных монет.`;
+      } else {
+        UPGRADE_SILVER_MINE.textContent = `Улучшить серебянную шахту, ${game.silver.mineUpgradeCost.toString()} серебрянных монет.`;
+      }
+
+      if (game.copper.coinsGrowth > 1) {
+        document.getElementById("prestigeLevel").innerHTML = "Мультипликатор от эффекта Престижа равен " + game.copper.coinsGrowth.toString();
+        document.getElementById("prestigeLevel").style.display = "block";
+      } else {
+        document.getElementById("prestigeLevel").style.display = "none";
+      }
+
+      if (showExport === 1){
+        document.getElementById("exportLevel").style.display = "block";
+      } else {
+        document.getElementById("exportLevel").style.display = "none";
+      }
     }
 
     function saveGame() {
@@ -71,9 +195,34 @@
     }
 
     function loadGame() {
-      game = JSON.parse(localStorage.getItem('gameSave'));
-      
+      gameCoockie = JSON.parse(localStorage.getItem('gameSave'));
+      for (var propertyName in gameCoockie) { game[propertyName] = gameCoockie[propertyName]; }
       updateUI();
+    }
+
+    function exportGame() {
+      exportTimer = setInterval(exportCountdown, 1000);
+      document.getElementById("exportLevel").innerHTML = btoa(JSON.stringify(game));
+      showExport = 1;
+      updateUI();
+    }
+
+    function importGame() {
+      let importString = prompt('Введите длинную строку экспорта');
+      gameTemp = JSON.parse(atob(importString));
+      for (var propertyName in gameTemp) { game[propertyName] = gameTemp[propertyName]; }
+      updateUI();
+    }
+
+    function exportCountdown() {
+      if (countdown > 0) {
+        countdown -= 1;
+      } else {
+        clearTimeout(exportTimer);
+        countdown = 30;
+        showExport = 0;
+        updateUI();
+      }
     }
   </script>
 </body>
